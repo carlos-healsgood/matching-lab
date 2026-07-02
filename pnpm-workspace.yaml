@@ -1,0 +1,4 @@
+# Allow native postinstall builds needed by Vite (esbuild) and Tailwind v4 (oxide).
+allowBuilds:
+  esbuild: true
+  "@tailwindcss/oxide": true
