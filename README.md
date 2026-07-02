@@ -1,5 +1,9 @@
 # Matching Lab
 
+### 🔗 Live: **https://carlos-healsgood.github.io/matching-lab/**
+
+[![Deploy to GitHub Pages](https://github.com/carlos-healsgood/matching-lab/actions/workflows/deploy.yml/badge.svg)](https://github.com/carlos-healsgood/matching-lab/actions/workflows/deploy.yml)
+
 Interactive playground to **see, tweak and experiment** with Healsgood's AI
 matching algorithms. Point people here to build intuition for how a raw signal
 (distance, skills, pay) becomes a match score — without touching the live system.
