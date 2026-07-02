@@ -7,7 +7,7 @@ import type { DistanceFunction } from "./types";
 // ~1 within a comfortable commute, exactly 0.5 at d0 (the 50%-willingness
 // distance), asymptotically -> 0 (never exactly 0) when too far.
 //
-// Production defaults are tuned in KM: d0 = 32 km (~= 19.88 miles), k = 0.155.
+// Production defaults are tuned in KM: d0 = 50 km (~= 31 miles), k = 0.1.
 export const sigmoid: DistanceFunction = {
   id: "sigmoid",
   label: "Logistic sigmoid",
@@ -36,7 +36,7 @@ export const sigmoid: DistanceFunction = {
       hint: "Higher k = sharper cut-off around d₀.",
     },
   ],
-  defaults: { d0: 32, k: 0.155 },
+  defaults: { d0: 50, k: 0.1 },
   scoreKm: (dKm, p) => {
     const x = p.k * (dKm - p.d0);
     if (x >= 709) return 0; // guard Math.exp overflow (score ~0 anyway)

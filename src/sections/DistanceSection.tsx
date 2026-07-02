@@ -23,13 +23,13 @@ export function DistanceSection() {
 
   const [params, setParams] = useState<Record<string, number>>({ ...fn.defaults });
   const [unit, setUnit] = useState<Unit>("km");
-  const [queryKm, setQueryKm] = useState(fn.defaults.d0 ?? 32);
+  const [queryKm, setQueryKm] = useState(fn.defaults.d0 ?? 50);
 
   const selectFn = (id: string) => {
     const next = getDistanceFunction(id);
     setFnId(id);
     setParams({ ...next.defaults });
-    setQueryKm(next.defaults.d0 ?? 32);
+    setQueryKm(next.defaults.d0 ?? 50);
   };
 
   const reset = () => setParams({ ...fn.defaults });
@@ -38,7 +38,7 @@ export function DistanceSection() {
   const atProduction = fn.params.every((p) => isProd(p.key));
 
   // axis extends with d0 so the full S-curve always fits
-  const maxKm = Math.max(100, (params.d0 ?? 32) * 2.6);
+  const maxKm = Math.max(100, (params.d0 ?? 50) * 2.6);
   const maxX = fromKm(maxKm, unit);
 
   const data = useMemo<ChartPoint[]>(() => {
@@ -52,8 +52,8 @@ export function DistanceSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fnId, JSON.stringify(params), unit, maxX]);
 
-  const midpointDisplay = fromKm(params.d0 ?? 32, unit);
-  const d0Km = params.d0 ?? 32;
+  const midpointDisplay = fromKm(params.d0 ?? 50, unit);
+  const d0Km = params.d0 ?? 50;
 
   // "test a distance" readout
   const queryDisplay = fromKm(queryKm, unit);

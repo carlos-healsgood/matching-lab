@@ -29,10 +29,9 @@ pnpm build      # production bundle in dist/
 ## What's here
 
 - **Distance** (live): logistic sigmoid commute curve. Tweak `d₀` (the 50%
-  point) and `k` (steepness), toggle **km / miles**, adjust the **penalty floor**,
-  overlay the **effective multiplier**, and test any distance. Defaults mirror
-  production (`d₀ = 32 km ≈ 19.88 mi`, `k = 0.155`, `penalty_floor = 0.5`).
-  Reset returns to production at one click.
+  point) and `k` (steepness), toggle **km / miles**, and test any distance.
+  Defaults mirror production (`d₀ = 50 km ≈ 31 mi`, `k = 0.1`). Reset returns to
+  production at one click.
 - **Skills**, **Pay rate** — coming soon (same interface).
 
 ## Extending
