@@ -1,77 +1,74 @@
 import { useMemo, useState } from "react";
-import { FunctionSquare, RotateCcw, Sigma } from "lucide-react";
+import { RotateCcw, Sigma, Star } from "lucide-react";
 import { Card, Badge, Stat, SectionHeading } from "../components/ui/primitives";
 import { Slider } from "../components/ui/Slider";
 import { SegmentedToggle } from "../components/ui/SegmentedToggle";
+import { BandsEditor } from "../components/ui/BandsEditor";
 import { DistanceChart, type ChartPoint } from "../components/DistanceChart";
-import { distanceFunctions, getDistanceFunction } from "../lib/algorithms/distance";
 import {
-  fromKm,
-  toKm,
-  kmToMiles,
-  unitShort,
-  round,
-  type Unit,
-} from "../lib/units";
+  distanceFunctions,
+  getDistanceFunction,
+  type Band,
+  type DistanceFunction,
+  type ParamValue,
+} from "../lib/algorithms/distance";
+import { fromKm, toKm, kmToMiles, unitShort, round, type Unit } from "../lib/units";
 
-const EPS = 1e-6;
 const SAMPLES = 500; // curve resolution
+type Params = Record<string, ParamValue>;
+
+const clone = (d: Params): Params => JSON.parse(JSON.stringify(d));
+const num = (v: ParamValue | undefined) => (typeof v === "number" ? v : 0);
 
 export function DistanceSection() {
   const [fnId, setFnId] = useState("sigmoid");
   const fn = getDistanceFunction(fnId);
 
-  const [params, setParams] = useState<Record<string, number>>({ ...fn.defaults });
+  const [params, setParams] = useState<Params>(() => clone(fn.defaults));
   const [unit, setUnit] = useState<Unit>("km");
-  const [queryKm, setQueryKm] = useState(fn.defaults.d0 ?? 50);
+  const [queryKm, setQueryKm] = useState(30);
 
   const selectFn = (id: string) => {
-    const next = getDistanceFunction(id);
     setFnId(id);
-    setParams({ ...next.defaults });
-    setQueryKm(next.defaults.d0 ?? 50);
+    setParams(clone(getDistanceFunction(id).defaults));
   };
+  const reset = () => setParams(clone(fn.defaults));
 
-  const reset = () => setParams({ ...fn.defaults });
+  const score = (dKm: number) => fn.scoreKm(dKm, params) * 100;
 
-  const isProd = (key: string) => Math.abs(params[key] - fn.defaults[key]) < EPS;
+  const isProd = (key: string) =>
+    JSON.stringify(params[key]) === JSON.stringify(fn.defaults[key]);
   const atProduction = fn.params.every((p) => isProd(p.key));
 
-  // axis extends with d0 so the full S-curve always fits
-  const maxKm = Math.max(100, (params.d0 ?? 50) * 2.6);
+  const maxKm = computeMaxKm(fn, params);
   const maxX = fromKm(maxKm, unit);
 
   const data = useMemo<ChartPoint[]>(() => {
     const pts: ChartPoint[] = [];
     for (let i = 0; i <= SAMPLES; i++) {
       const xDisplay = (maxX * i) / SAMPLES;
-      const dKm = toKm(xDisplay, unit);
-      pts.push({ x: round(xDisplay, 4), score: fn.scoreKm(dKm, params) * 100 });
+      pts.push({ x: round(xDisplay, 4), score: fn.scoreKm(toKm(xDisplay, unit), params) * 100 });
     }
     return pts;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fnId, JSON.stringify(params), unit, maxX]);
 
-  const midpointDisplay = fromKm(params.d0 ?? 50, unit);
-  const d0Km = params.d0 ?? 50;
-
-  // "test a distance" readout
-  const queryDisplay = fromKm(queryKm, unit);
-  const queryScore = fn.scoreKm(queryKm, params) * 100;
-
-  // insight bands (function-agnostic, read off the curve)
+  const halfKm = crossKm(fn, params, 0.5, maxKm);
   const comfortableKm = lastKmAtLeast(fn, params, maxKm, 90);
   const farKm = firstKmAtMost(fn, params, maxKm, 10);
+
+  const queryDisplay = Math.min(fromKm(queryKm, unit), maxX);
+  const queryScore = score(toKm(queryDisplay, unit));
 
   return (
     <div>
       <SectionHeading
         title="Distance scoring"
-        subtitle="How commute distance turns into a match score. Move the parameters and watch the curve — defaults mirror production."
+        subtitle="How commute distance turns into a match score. Pick a function, move its parameters and watch the curve."
         right={
           <div className="flex items-center gap-2">
             {atProduction ? (
-              <Badge tone="brand">● at production defaults</Badge>
+              <Badge tone="brand">● defaults</Badge>
             ) : (
               <Badge tone="muted">modified</Badge>
             )}
@@ -79,33 +76,41 @@ export function DistanceSection() {
               onClick={reset}
               className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5 text-sm text-slate-300 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
             >
-              <RotateCcw size={14} /> Reset to production
+              <RotateCcw size={14} /> Reset
             </button>
           </div>
         }
       />
 
+      {/* Function selector (wraps to fit all functions) */}
+      <div className="mb-5 flex flex-wrap gap-2">
+        {distanceFunctions.map((f) => {
+          const active = f.id === fnId;
+          return (
+            <button
+              key={f.id}
+              onClick={() => selectFn(f.id)}
+              className={[
+                "inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-all",
+                active
+                  ? "bg-violet-500 text-white shadow-[0_2px_12px_-2px_rgba(124,58,237,0.7)]"
+                  : "bg-white/5 text-slate-300 ring-1 ring-white/10 hover:bg-white/10 hover:text-white",
+              ].join(" ")}
+            >
+              {f.recommended && (
+                <Star size={13} className={active ? "text-amber-200" : "text-amber-400"} fill="currentColor" />
+              )}
+              {f.label}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         {/* Controls */}
         <Card className="lg:col-span-5">
           <div className="space-y-5 p-5">
-            <div>
-              <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                <FunctionSquare size={14} /> Function
-              </div>
-              <SegmentedToggle
-                value={fnId}
-                onChange={selectFn}
-                options={distanceFunctions.map((f) => ({
-                  value: f.id,
-                  label: f.label,
-                  disabled: f.status === "soon",
-                }))}
-              />
-              <p className="mt-3 text-sm leading-relaxed text-slate-400">
-                {fn.description}
-              </p>
-            </div>
+            <p className="text-sm leading-relaxed text-slate-400">{fn.description}</p>
 
             <div className="h-px bg-white/5" />
 
@@ -125,11 +130,36 @@ export function DistanceSection() {
             </div>
 
             {fn.params.map((p) => {
+              if (p.kind === "bands") {
+                return (
+                  <div key={p.key} className="space-y-2">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm font-medium text-slate-300">
+                        {p.label}
+                        {isProd(p.key) && (
+                          <span className="ml-2 align-middle text-[10px] uppercase tracking-wider text-emerald-400/80">
+                            ● default
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    {p.hint && <p className="text-xs text-slate-500">{p.hint}</p>}
+                    <BandsEditor
+                      value={params[p.key] as Band[]}
+                      unit={unit}
+                      onChange={(bands) =>
+                        setParams((prev) => ({ ...prev, [p.key]: bands }))
+                      }
+                    />
+                  </div>
+                );
+              }
               const isDist = p.kind === "distance";
-              const value = isDist ? fromKm(params[p.key], unit) : params[p.key];
-              const min = isDist ? fromKm(p.min, unit) : p.min;
-              const max = isDist ? fromKm(p.max, unit) : p.max;
-              const step = isDist ? (unit === "mi" ? 0.25 : p.step) : p.step;
+              const raw = num(params[p.key]);
+              const value = isDist ? fromKm(raw, unit) : raw;
+              const min = isDist ? fromKm(p.min ?? 0, unit) : (p.min ?? 0);
+              const max = isDist ? fromKm(p.max ?? 1, unit) : (p.max ?? 1);
+              const step = isDist ? (unit === "mi" ? 0.25 : (p.step ?? 1)) : (p.step ?? 1);
               const dec = isDist ? 1 : 3;
               return (
                 <Slider
@@ -163,6 +193,7 @@ export function DistanceSection() {
                 <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
                   <Sigma size={16} className="text-violet-300" />
                   {fn.label}
+                  {fn.recommended && <Badge tone="brand">recommended</Badge>}
                 </div>
                 <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
                   <span className="inline-block h-2 w-4 rounded-full bg-gradient-to-r from-violet-400 to-violet-600" />
@@ -173,7 +204,7 @@ export function DistanceSection() {
                 data={data}
                 unit={unit}
                 maxX={maxX}
-                midpoint={midpointDisplay}
+                midpoint={halfKm != null ? fromKm(halfKm, unit) : null}
                 query={{ x: queryDisplay, score: queryScore }}
               />
               <div className="mt-2 rounded-lg bg-black/20 px-3 py-2 text-center font-mono text-xs text-slate-400">
@@ -184,9 +215,9 @@ export function DistanceSection() {
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <Stat
-              label="50% point (d₀)"
-              value={`${round(d0Km, 1)} km`}
-              sub={`${round(kmToMiles(d0Km), 1)} miles`}
+              label="50% point"
+              value={halfKm != null ? `${round(fromKm(halfKm, unit), 1)} ${unitShort(unit)}` : "—"}
+              sub={halfKm != null ? `${round(halfKm, 1)} km / ${round(kmToMiles(halfKm), 1)} mi` : undefined}
               tone="accent"
             />
             <Stat
@@ -235,33 +266,66 @@ export function DistanceSection() {
   );
 }
 
-// ── curve-band helpers (function-agnostic) ──────────────────────────────────
+// ── curve helpers (function-agnostic; scan the real scoreKm) ────────────────
+function computeMaxKm(fn: DistanceFunction, params: Params): number {
+  const scanMax = 250;
+  const N = 500;
+  let below: number | null = null;
+  for (let i = 0; i <= N; i++) {
+    const d = (scanMax * i) / N;
+    if (fn.scoreKm(d, params) <= 0.02) {
+      below = d;
+      break;
+    }
+  }
+  const base = below ?? scanMax;
+  const nice = Math.ceil((base * 1.15) / 10) * 10;
+  return Math.min(250, Math.max(60, nice));
+}
+
+function crossKm(
+  fn: DistanceFunction,
+  params: Params,
+  target: number,
+  maxKm: number,
+): number | null {
+  const N = 4000;
+  let prev = fn.scoreKm(0, params);
+  for (let i = 1; i <= N; i++) {
+    const d = (maxKm * i) / N;
+    const s = fn.scoreKm(d, params);
+    if (prev >= target && s < target) return d;
+    prev = s;
+  }
+  return null;
+}
+
 function lastKmAtLeast(
-  fn: ReturnType<typeof getDistanceFunction>,
-  params: Record<string, number>,
+  fn: DistanceFunction,
+  params: Params,
   maxKm: number,
   targetPct: number,
 ): number | null {
   const N = 2000;
   let last: number | null = null;
   for (let i = 0; i <= N; i++) {
-    const dKm = (maxKm * i) / N;
-    if (fn.scoreKm(dKm, params) * 100 >= targetPct) last = dKm;
+    const d = (maxKm * i) / N;
+    if (fn.scoreKm(d, params) * 100 >= targetPct) last = d;
     else break;
   }
   return last;
 }
 
 function firstKmAtMost(
-  fn: ReturnType<typeof getDistanceFunction>,
-  params: Record<string, number>,
+  fn: DistanceFunction,
+  params: Params,
   maxKm: number,
   targetPct: number,
 ): number | null {
   const N = 2000;
   for (let i = 0; i <= N; i++) {
-    const dKm = (maxKm * i) / N;
-    if (fn.scoreKm(dKm, params) * 100 <= targetPct) return dKm;
+    const d = (maxKm * i) / N;
+    if (fn.scoreKm(d, params) * 100 <= targetPct) return d;
   }
   return null;
 }

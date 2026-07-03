@@ -26,7 +26,7 @@ export function DistanceChart({
   data: ChartPoint[];
   unit: Unit;
   maxX: number;
-  midpoint: number; // d0 in display unit
+  midpoint: number | null; // distance (display unit) where score crosses 50%, if any
   query: { x: number; score: number } | null;
 }) {
   return (
@@ -67,13 +67,15 @@ export function DistanceChart({
           <Tooltip content={<ScoreTooltip unit={unit} />} />
 
           <ReferenceLine y={50} stroke="#334155" strokeDasharray="4 4" />
-          <ReferenceLine
-            x={midpoint}
-            stroke="#22d3ee"
-            strokeDasharray="4 4"
-            strokeOpacity={0.6}
-            label={{ value: "d₀", fill: "#22d3ee", fontSize: 12, position: "top" }}
-          />
+          {midpoint != null && (
+            <ReferenceLine
+              x={midpoint}
+              stroke="#22d3ee"
+              strokeDasharray="4 4"
+              strokeOpacity={0.6}
+              label={{ value: "50%", fill: "#22d3ee", fontSize: 12, position: "top" }}
+            />
+          )}
 
           <Line
             type="monotone"
