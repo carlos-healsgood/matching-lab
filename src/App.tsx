@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { sections } from "./sections";
 import { DistanceSection } from "./sections/DistanceSection";
+import { PayRateSection } from "./sections/PayRateSection";
+import { SkillsSection } from "./sections/SkillsSection";
 import { ComingSoon } from "./sections/ComingSoon";
 
 export default function App() {
@@ -26,6 +28,10 @@ export default function App() {
 
           {active === "distance" ? (
             <DistanceSection />
+          ) : active === "payrate" ? (
+            <PayRateSection />
+          ) : active === "skills" ? (
+            <SkillsSection />
           ) : (
             <ComingSoon label={section.label} blurb={section.blurb} />
           )}

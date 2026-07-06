@@ -21,14 +21,14 @@ export const sections: SectionDef[] = [
     id: "skills",
     label: "Skills",
     icon: Sparkles,
-    status: "soon",
+    status: "active",
     blurb: "Required-skills overlap",
   },
   {
     id: "payrate",
     label: "Pay rate",
     icon: Coins,
-    status: "soon",
+    status: "active",
     blurb: "Budget-fit scoring",
   },
 ];

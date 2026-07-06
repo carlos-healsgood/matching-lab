@@ -32,7 +32,12 @@ pnpm build      # production bundle in dist/
   point) and `k` (steepness), toggle **km / miles**, and test any distance.
   Defaults mirror production (`d₀ = 50 km ≈ 31 mi`, `k = 0.1`). Reset returns to
   production at one click.
-- **Skills**, **Pay rate** — coming soon (same interface).
+- **Pay rate** (live): one-sided soft over-budget curve — at/under budget scores
+  100%, over budget decays as `(budget/pay)^hp` (prod hp = 1.7), no stated pay → 0.
+  Tune the budget and `hp`, test any candidate rate.
+- **Skills** (live): exact set-overlap coverage `|required ∩ candidate| / |required|`.
+  Pick the job's required skills and the candidate's skills from a shared
+  vocabulary; extras are ignored, and a job with no required skills scores 100.
 
 ## Extending
 
