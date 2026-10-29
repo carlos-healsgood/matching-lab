@@ -1,4 +1,4 @@
-import { Coins, MapPin, Sparkles, type LucideIcon } from "lucide-react";
+import { Coins, MapPin, Sparkles, Users, type LucideIcon } from "lucide-react";
 
 export interface SectionDef {
   id: string;
@@ -10,6 +10,13 @@ export interface SectionDef {
 
 // Add a section here and it appears in the sidebar automatically.
 export const sections: SectionDef[] = [
+  {
+    id: "who",
+    label: "Who shows up",
+    icon: Users,
+    status: "active",
+    blurb: "Candidates on the distance curve",
+  },
   {
     id: "distance",
     label: "Distance",

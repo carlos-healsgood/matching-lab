@@ -5,14 +5,22 @@ import { DistanceSection } from "./sections/DistanceSection";
 import { PayRateSection } from "./sections/PayRateSection";
 import { SkillsSection } from "./sections/SkillsSection";
 import { ComingSoon } from "./sections/ComingSoon";
+import { WhoShowsUpSection } from "./sections/WhoShowsUpSection";
 
 export default function App() {
-  const [active, setActive] = useState("distance");
+  const [active, setActive] = useState(() => {
+    const fromHash = window.location.hash.slice(1);
+    return sections.some((s) => s.id === fromHash) ? fromHash : "who";
+  });
+  const select = (id: string) => {
+    setActive(id);
+    window.history.replaceState(null, "", `#${id}`);
+  };
   const section = sections.find((s) => s.id === active) ?? sections[0];
 
   return (
     <div className="flex h-full min-h-screen">
-      <Sidebar active={active} onSelect={setActive} />
+      <Sidebar active={active} onSelect={select} />
 
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-6xl px-6 py-8">
@@ -26,7 +34,9 @@ export default function App() {
             </p>
           </header>
 
-          {active === "distance" ? (
+          {active === "who" ? (
+            <WhoShowsUpSection />
+          ) : active === "distance" ? (
             <DistanceSection />
           ) : active === "payrate" ? (
             <PayRateSection />
