@@ -65,8 +65,8 @@ export function Sidebar({
 
       <div className="mt-auto rounded-xl bg-white/[0.03] p-3 text-[11px] leading-relaxed text-slate-500 ring-1 ring-white/5">
         Tweak parameters to explore. Defaults mirror{" "}
-        <span className="text-emerald-400/80">production</span>. Nothing here
-        affects the live system.
+        <span className="text-emerald-400/80">production</span>, except where
+        marked as a proposal. Nothing here affects the live system.
       </div>
     </aside>
   );
