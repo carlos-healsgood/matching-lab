@@ -1,6 +1,6 @@
 # Who shows up: candidates on the distance curve
 
-Status: accepted
+Status: implemented
 
 ## Objective
 
