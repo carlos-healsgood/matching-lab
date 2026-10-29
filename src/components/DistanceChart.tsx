@@ -21,18 +21,20 @@ export function DistanceChart({
   unit,
   maxX,
   midpoint,
+  cutoff,
   query,
 }: {
   data: ChartPoint[];
   unit: Unit;
   maxX: number;
   midpoint: number | null; // distance (display unit) where score crosses 50%, if any
+  cutoff: number | null; // distance (display unit) beyond which the candidate is not shown, if any
   query: { x: number; score: number } | null;
 }) {
   return (
     <div className="h-[380px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 10, right: 16, bottom: 24, left: 4 }}>
+        <LineChart data={data} margin={{ top: 24, right: 16, bottom: 24, left: 4 }}>
           <defs>
             <linearGradient id="scoreStroke" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor="#a78bfa" />
@@ -74,6 +76,15 @@ export function DistanceChart({
               strokeDasharray="4 4"
               strokeOpacity={0.6}
               label={{ value: "50%", fill: "#22d3ee", fontSize: 12, position: "top" }}
+            />
+          )}
+
+          {cutoff != null && (
+            <ReferenceLine
+              x={cutoff}
+              stroke="#f87171"
+              strokeDasharray="4 4"
+              label={{ value: "not shown", fill: "#f87171", fontSize: 12, position: "top" }}
             />
           )}
 

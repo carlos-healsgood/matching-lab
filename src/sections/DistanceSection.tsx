@@ -53,12 +53,14 @@ export function DistanceSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fnId, JSON.stringify(params), unit, maxX]);
 
+  const cutoffKm = fn.cutoffKm?.(params) ?? null;
   const halfKm = crossKm(fn, params, 0.5, maxKm);
   const comfortableKm = lastKmAtLeast(fn, params, maxKm, 90);
   const farKm = firstKmAtMost(fn, params, maxKm, 10);
 
   const queryDisplay = Math.min(fromKm(queryKm, unit), maxX);
   const queryScore = score(toKm(queryDisplay, unit));
+  const queryHidden = cutoffKm != null && toKm(queryDisplay, unit) >= cutoffKm;
 
   return (
     <div>
@@ -173,6 +175,7 @@ export function DistanceSection() {
                   suffix={isDist ? unitShort(unit) : p.suffix}
                   hint={p.hint}
                   isProduction={isProd(p.key)}
+                  defaultLabel={fn.proposed ? "proposed" : "prod"}
                   onChange={(v) =>
                     setParams((prev) => ({
                       ...prev,
@@ -193,7 +196,11 @@ export function DistanceSection() {
                 <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
                   <Sigma size={16} className="text-violet-300" />
                   {fn.label}
-                  {fn.recommended && <Badge tone="brand">recommended</Badge>}
+                  {fn.proposed ? (
+                    <Badge tone="brand">proposed</Badge>
+                  ) : (
+                    fn.recommended && <Badge tone="brand">recommended</Badge>
+                  )}
                 </div>
                 <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
                   <span className="inline-block h-2 w-4 rounded-full bg-gradient-to-r from-violet-400 to-violet-600" />
@@ -205,6 +212,7 @@ export function DistanceSection() {
                 unit={unit}
                 maxX={maxX}
                 midpoint={halfKm != null ? fromKm(halfKm, unit) : null}
+                cutoff={cutoffKm != null ? fromKm(cutoffKm, unit) : null}
                 query={{ x: queryDisplay, score: queryScore }}
               />
               <div className="mt-2 rounded-lg bg-black/20 px-3 py-2 text-center font-mono text-xs text-slate-400">
@@ -252,11 +260,21 @@ export function DistanceSection() {
                 <span className="font-semibold text-slate-200">
                   {round(queryDisplay, 2)} {unitShort(unit)}
                 </span>{" "}
-                away scores{" "}
-                <span className="font-semibold text-violet-300">
-                  {queryScore.toFixed(2)}%
-                </span>{" "}
-                on distance.
+                away{" "}
+                {queryHidden ? (
+                  <>
+                    is <span className="font-semibold text-red-300">not shown</span> by AI
+                    matching. If they applied themselves, they are shown anyway.
+                  </>
+                ) : (
+                  <>
+                    scores{" "}
+                    <span className="font-semibold text-violet-300">
+                      {queryScore.toFixed(2)}%
+                    </span>{" "}
+                    on distance.
+                  </>
+                )}
               </p>
             </div>
           </Card>
@@ -268,6 +286,8 @@ export function DistanceSection() {
 
 // ── curve helpers (function-agnostic; scan the real scoreKm) ────────────────
 function computeMaxKm(fn: DistanceFunction, params: Params): number {
+  const cutoff = fn.cutoffKm?.(params);
+  if (cutoff != null) return Math.ceil((cutoff * 1.15) / 10) * 10;
   const scanMax = 250;
   const N = 500;
   let below: number | null = null;

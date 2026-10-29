@@ -11,6 +11,7 @@ export function Slider({
   hint,
   decimals = 2,
   isProduction,
+  defaultLabel = "prod",
 }: {
   label: string;
   value: number;
@@ -22,6 +23,7 @@ export function Slider({
   hint?: string;
   decimals?: number;
   isProduction?: boolean;
+  defaultLabel?: string;
 }) {
   const pct = ((value - min) / (max - min)) * 100;
   const style = { "--pct": `${pct}%` } as CSSProperties;
@@ -33,7 +35,7 @@ export function Slider({
           {label}
           {isProduction && (
             <span className="ml-2 align-middle text-[10px] uppercase tracking-wider text-emerald-400/80">
-              ● prod
+              ● {defaultLabel}
             </span>
           )}
         </label>

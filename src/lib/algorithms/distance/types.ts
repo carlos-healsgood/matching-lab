@@ -28,12 +28,16 @@ export interface DistanceFunction {
   label: string;
   status: "active" | "soon";
   recommended?: boolean;
+  /** a proposal, not what production runs today */
+  proposed?: boolean;
   /** human formula for display (rendered as-is) */
   formula: string;
   description: string;
   params: ParamDef[];
   /** PRODUCTION / sensible defaults, canonical units (distance params in km). */
   defaults: Record<string, ParamValue>;
+  /** distance in KM beyond which the candidate is not shown at all, if any. */
+  cutoffKm?: (p: Record<string, ParamValue>) => number | null;
   /** score in [0,1] for a distance in KM given canonical params. */
   scoreKm: (dKm: number, p: Record<string, ParamValue>) => number;
 }
