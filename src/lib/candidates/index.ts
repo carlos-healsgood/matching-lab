@@ -61,16 +61,20 @@ export const CAST: Candidate[] = [
 export const formatMiles = (mi: number): string =>
   `${Math.round(mi).toLocaleString("en-US")} mi`;
 
-/** Distance score 0-100 under the proposal, from the same curve the Distance tab draws. */
-export function distanceScore(distanceMi: number, p: Proposal): number {
+/** Unrounded 0-100 score from the same curve the Distance tab draws, for plotting. */
+export function curveScore(distanceMi: number, p: Proposal): number {
   const params = {
     knee: milesToKm(p.kneeMi),
     kneeScore: p.kneeScore,
     decay: milesToKm(p.decayMi),
     cap: milesToKm(p.capMi),
   };
-  return Math.round(kneeCap.scoreKm(milesToKm(distanceMi), params) * 100);
+  return kneeCap.scoreKm(milesToKm(distanceMi), params) * 100;
 }
+
+/** Distance score 0-100 under the proposal, as a candidate would see it. */
+export const distanceScore = (distanceMi: number, p: Proposal): number =>
+  Math.round(curveScore(distanceMi, p));
 
 export function zoneOf(distanceMi: number | null, p: Proposal): Zone {
   if (distanceMi == null) return "unknown";
