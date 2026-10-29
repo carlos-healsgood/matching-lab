@@ -195,6 +195,19 @@ export function WhoShowsUpSection() {
                   onChange={(v) => set({ kneeMi: v })}
                 />
                 <Slider
+                  label="Curvature after the normal commute"
+                  value={proposal.decayMi}
+                  min={15}
+                  max={500}
+                  step={5}
+                  decimals={0}
+                  suffix="mi"
+                  hint="Low: drops hard right after the commute, then flattens. High: almost a straight line to the cap."
+                  isProduction={proposal.decayMi === PROPOSAL.decayMi}
+                  defaultLabel="proposed"
+                  onChange={(v) => set({ decayMi: v })}
+                />
+                <Slider
                   label="AI matches not shown beyond"
                   value={proposal.capMi}
                   min={100}
