@@ -21,11 +21,11 @@ const clone = (d: Params): Params => JSON.parse(JSON.stringify(d));
 const num = (v: ParamValue | undefined) => (typeof v === "number" ? v : 0);
 
 export function DistanceSection() {
-  const [fnId, setFnId] = useState("sigmoid");
+  const [fnId, setFnId] = useState("knee-cap");
   const fn = getDistanceFunction(fnId);
 
   const [params, setParams] = useState<Params>(() => clone(fn.defaults));
-  const [unit, setUnit] = useState<Unit>("km");
+  const [unit, setUnit] = useState<Unit>("mi");
   const [queryKm, setQueryKm] = useState(30);
 
   const selectFn = (id: string) => {

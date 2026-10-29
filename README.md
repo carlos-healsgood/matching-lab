@@ -28,7 +28,14 @@ pnpm build      # production bundle in dist/
 
 ## What's here
 
-- **Distance** (live): logistic sigmoid commute curve. Tweak `d₀` (the 50%
+- **Distance** (live), opening on the **proposed** curve, *Knee + cap*:
+  - up to the knee (60 mi, a normal commute) the score falls gently, to 90 %;
+  - past the knee it falls exponentially, to about a third every 60 mi;
+  - beyond the cap (300 mi) AI matching does not show the candidate at all.
+  - People who apply to a vacancy themselves are always shown, at any distance or
+    with no address: the cap only applies to candidates AI finds.
+
+  Production today runs the logistic sigmoid commute curve. Tweak `d₀` (the 50%
   point) and `k` (steepness), toggle **km / miles**, and test any distance.
   Defaults mirror production (`d₀ = 110 km ≈ 68 mi`, `k = 0.05`). Reset returns to
   production at one click.

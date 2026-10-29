@@ -12,7 +12,6 @@ export const sigmoid: DistanceFunction = {
   id: "sigmoid",
   label: "Sigmoid",
   status: "active",
-  recommended: true,
   formula: "score = 1 / (1 + e^(k · (d − d₀)))",
   description:
     "S-shaped commute-willingness curve: a flat plateau near the workplace, a decisive drop through the midpoint d₀, and a long asymptotic tail (never a hard cliff). Two knobs: d₀ (the 50% point) and k (how sharp the drop is).",

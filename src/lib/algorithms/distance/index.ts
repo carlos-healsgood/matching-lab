@@ -5,10 +5,12 @@ import { plateauLinear } from "./plateauLinear";
 import { gaussian } from "./gaussian";
 import { exponential } from "./exponential";
 import { segments } from "./segments";
+import { kneeCap } from "./kneeCap";
 
 // Registry of distance scoring functions. Add a new one here and it appears in
 // the UI automatically (the UI renders each function's params from metadata).
 export const distanceFunctions: DistanceFunction[] = [
+  kneeCap,
   sigmoid,
   linear,
   plateauLinear,
