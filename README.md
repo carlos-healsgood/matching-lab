@@ -31,7 +31,7 @@ pnpm build      # production bundle in dist/
 - **Distance** (live), opening on the **proposed** curve, *Knee + cap*:
   - up to the knee (60 mi, a normal commute) the score falls gently, to 90 %;
   - past the knee it falls exponentially, to about a third every 60 mi;
-  - beyond the cap (300 mi) AI matching does not show the candidate at all.
+  - beyond the cap (250 mi) AI matching does not show the candidate at all.
   - People who apply to a vacancy themselves are always shown, at any distance or
     with no address: the cap only applies to candidates AI finds.
 

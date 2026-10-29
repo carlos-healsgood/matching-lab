@@ -57,7 +57,7 @@ export const kneeCap: DistanceFunction = {
     knee: milesToKm(60),
     kneeScore: 0.9,
     decay: milesToKm(60),
-    cap: milesToKm(300),
+    cap: milesToKm(250),
   },
   cutoffKm: (p) => num(p.cap),
   scoreKm: (dKm, p) => {
