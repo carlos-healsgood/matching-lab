@@ -34,7 +34,7 @@ function Rule({
 
 export function RulesStrip({ proposal }: { proposal: Proposal }) {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <Rule icon={UserCheck} tone="emerald" title="Applied? Always shown.">
         Anyone who applies to the vacancy appears on its board, wherever they live, even
         with no address on file.

@@ -67,7 +67,11 @@ export function WhoShowsUpSection() {
       <SectionHeading
         title="Who shows up on a vacancy"
         subtitle="How distance decides which candidates a recruiter sees, and how high they rank. Invented candidates, proposed rules."
-        right={atProposal ? <Badge tone="brand">● proposal for approval</Badge> : <Badge tone="muted">modified</Badge>}
+        right={
+          <span className="shrink-0 whitespace-nowrap">
+            {atProposal ? <Badge tone="brand">● proposal for approval</Badge> : <Badge tone="muted">modified</Badge>}
+          </span>
+        }
       />
 
       <RulesStrip proposal={proposal} />
