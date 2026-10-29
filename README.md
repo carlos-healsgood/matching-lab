@@ -30,7 +30,7 @@ pnpm build      # production bundle in dist/
 
 - **Distance** (live): logistic sigmoid commute curve. Tweak `d₀` (the 50%
   point) and `k` (steepness), toggle **km / miles**, and test any distance.
-  Defaults mirror production (`d₀ = 50 km ≈ 31 mi`, `k = 0.1`). Reset returns to
+  Defaults mirror production (`d₀ = 110 km ≈ 68 mi`, `k = 0.05`). Reset returns to
   production at one click.
 - **Pay rate** (live): one-sided soft over-budget curve — at/under budget scores
   100%, over budget decays as `(budget/pay)^hp` (prod hp = 1.7), no stated pay → 0.
