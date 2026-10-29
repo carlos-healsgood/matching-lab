@@ -20,8 +20,8 @@ export function TryCandidate({
   const who = origin === "applied" ? "A candidate who applied" : "An AI match";
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 whitespace-nowrap text-sm font-semibold text-slate-200">
           <Star size={15} className="text-amber-300" fill="currentColor" />
           Try a candidate
         </div>

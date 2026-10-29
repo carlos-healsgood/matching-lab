@@ -109,7 +109,7 @@ export function WhoShowsUpSection() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 p-5 lg:flex-row">
+        <div className="flex flex-col gap-5 p-5 xl:flex-row">
           <div className="min-w-0 flex-1">
             <CandidatesChart
               proposal={proposal}
@@ -120,7 +120,7 @@ export function WhoShowsUpSection() {
               onHover={setHover}
             />
           </div>
-          <div className="flex w-full flex-col gap-4 lg:w-56">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:flex xl:w-56 xl:flex-col">
             <Lane title={`Further than ${formatMiles(xMax)}`} hint="Off the chart to the right.">
               {further.map((pl) => (
                 <Chip key={pl.candidate.id} pl={pl} hover={hover} onHover={setHover} />
@@ -148,8 +148,8 @@ export function WhoShowsUpSection() {
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <Card className="lg:col-span-7">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <Card className="xl:col-span-7">
           <div className="p-5">
             <div className="mb-1 text-sm font-semibold text-slate-100">The recruiter's board</div>
             <p className="mb-4 text-xs text-slate-500">
@@ -159,7 +159,7 @@ export function WhoShowsUpSection() {
           </div>
         </Card>
 
-        <div className="space-y-6 self-start lg:sticky lg:top-6 lg:col-span-5">
+        <div className="space-y-6 self-start xl:sticky xl:top-6 xl:col-span-5">
           <Card>
             <div className="p-5">
               <TryCandidate

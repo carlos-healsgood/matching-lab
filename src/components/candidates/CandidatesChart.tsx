@@ -70,7 +70,7 @@ export function CandidatesChart({
   return (
     <div className="h-[440px] w-full select-none">
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart margin={{ top: 26, right: 18, bottom: 28, left: 6 }}>
+        <ComposedChart margin={{ top: 26, right: 44, bottom: 28, left: 6 }}>
           <CartesianGrid stroke="#1e2740" strokeDasharray="3 3" />
           <ReferenceArea x1={0} x2={proposal.kneeMi} y1={0} y2={100} fill={COLORS.commute} fillOpacity={0.07} ifOverflow="hidden"
             label={{ value: "Normal commute", position: "top", fill: "#6ee7b7", fontSize: 11 }} />
