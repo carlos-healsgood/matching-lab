@@ -40,7 +40,7 @@ export function CandidatesChart({
 
   const toPoint = (pl: Placement, isTry: boolean): Point => ({
     x: pl.candidate.distanceMi ?? 0,
-    y: pl.score ?? 0,
+    y: pl.score,
     placement: pl,
     isTry,
   });

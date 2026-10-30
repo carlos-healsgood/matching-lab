@@ -126,7 +126,7 @@ export function WhoShowsUpSection() {
                 <Chip key={pl.candidate.id} pl={pl} hover={hover} onHover={setHover} />
               ))}
             </Lane>
-            <Lane title="No address on file" hint="Kept, but distance cannot be scored.">
+            <Lane title="No address on file" hint="Kept, and scored 0 on distance until we know where they live.">
               {noAddress.map((pl) => (
                 <Chip key={pl.candidate.id} pl={pl} hover={hover} onHover={setHover} />
               ))}
@@ -233,9 +233,10 @@ export function WhoShowsUpSection() {
       </div>
 
       <p className="text-xs leading-relaxed text-slate-500">
-        The score here is the <span className="text-slate-400">distance part</span> of a match, from 0 to 100. The
-        overall match also weighs role, skills, availability and pay. The vacancy and every candidate on this page are
-        invented.
+        The score here is the <span className="text-slate-400">distance part</span> of a match, from 0 to 100, exactly
+        as the product computes it. The overall match is the average of five parts: skills, current role, recent
+        experience, distance and pay. They weigh the same unless the vacancy changes their weights. The vacancy and
+        every candidate on this page are invented.
       </p>
     </div>
   );

@@ -21,7 +21,7 @@ export function Board({
       </div>
 
       {board.unknown.length > 0 && (
-        <Group icon={<MapPinOff size={13} />} title="No address on file: shown, distance not scored">
+        <Group icon={<MapPinOff size={13} />} title="No address on file: shown, distance scored 0 (pending decision)">
           {board.unknown.map((pl) => (
             <Row key={pl.candidate.id} pl={pl} hover={hover} onHover={onHover} />
           ))}
@@ -126,9 +126,8 @@ function Row({
   );
 }
 
-function ScoreBar({ score, shown, color }: { score: number | null; shown: boolean; color: string }) {
+function ScoreBar({ score, shown, color }: { score: number; shown: boolean; color: string }) {
   if (!shown) return <span className="w-24 shrink-0 text-right text-xs font-medium text-red-300">not shown</span>;
-  if (score == null) return <span className="w-24 shrink-0 text-right text-xs text-slate-500">not scored</span>;
   return (
     <div className="flex w-24 shrink-0 items-center gap-2">
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">

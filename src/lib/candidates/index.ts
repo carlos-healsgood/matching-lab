@@ -30,8 +30,8 @@ export type Zone = "commute" | "fall" | "beyond" | "unknown";
 
 export interface Placement {
   candidate: Candidate;
-  /** distance score 0-100; null when the distance is unknown */
-  score: number | null;
+  /** distance score 0-100; 0 when the address is unknown, as application-service scores it */
+  score: number;
   shown: boolean;
   zone: Zone;
   reason: string;
@@ -88,13 +88,13 @@ export function placeCandidate(c: Candidate, p: Proposal): Placement {
   if (c.distanceMi == null) {
     return {
       candidate: c,
-      score: null,
+      score: 0,
       shown: true,
       zone,
       reason:
         c.origin === "applied"
-          ? "Applied, so always shown. No address yet, so distance is not scored."
-          : "No address yet: kept, and distance is not scored.",
+          ? "Applied, so always shown. No address yet, so distance scores 0 (pending decision)."
+          : "No address yet: kept, and distance scores 0 (pending decision).",
     };
   }
   const score = distanceScore(c.distanceMi, p);
@@ -142,9 +142,9 @@ export function buildBoard(cast: Candidate[], p: Proposal): Board {
   const placed = cast.map((c) => placeCandidate(c, p));
   return {
     shown: placed
-      .filter((x) => x.shown && x.score != null)
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0)),
-    unknown: placed.filter((x) => x.score == null),
+      .filter((x) => x.shown && x.zone !== "unknown")
+      .sort((a, b) => b.score - a.score),
+    unknown: placed.filter((x) => x.zone === "unknown"),
     hidden: placed
       .filter((x) => !x.shown)
       .sort((a, b) => (a.candidate.distanceMi ?? 0) - (b.candidate.distanceMi ?? 0)),
