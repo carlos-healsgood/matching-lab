@@ -21,8 +21,8 @@ export interface Proposal {
 
 export const PROPOSAL: Proposal = {
   kneeMi: 60,
-  kneeScore: 0.9,
-  decayMi: 60,
+  kneeScore: 0.5,
+  decayMi: 45,
   capMi: 250,
 };
 

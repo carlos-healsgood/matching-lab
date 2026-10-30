@@ -29,9 +29,9 @@ pnpm build      # production bundle in dist/
 ## What's here
 
 - **Distance** (live), opening on the **proposed** curve, *Knee + cap*:
-  - up to the knee (60 mi, a normal commute) the score falls gently, to 90 %;
-  - past the knee it falls faster, fading to exactly 0 at the cap; the curvature
-    `L` (60 mi) sets how hard it drops right after the knee;
+  - up to the knee (60 mi, a normal commute) the score falls steadily, to 50 %;
+  - past the knee it drops hard, fading to exactly 0 at the cap; the curvature
+    `L` (45 mi) sets how hard it drops right after the knee;
   - beyond the cap (250 mi) AI matching does not show the candidate at all.
   - People who apply to a vacancy themselves are always shown, at any distance or
     with no address: the cap only applies to candidates AI finds.

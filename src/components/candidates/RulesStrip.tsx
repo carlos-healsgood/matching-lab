@@ -40,8 +40,8 @@ export function RulesStrip({ proposal }: { proposal: Proposal }) {
         with no address on file.
       </Rule>
       <Rule icon={TrendingDown} tone="violet" title="Distance lowers the AI score">
-        The score falls gently over a normal commute, up to {formatMiles(proposal.kneeMi)},
-        then faster, fading to 0 at {formatMiles(proposal.capMi)}.
+        The score falls steadily to {Math.round(proposal.kneeScore * 100)} over a normal commute, up
+        to {formatMiles(proposal.kneeMi)}, then drops hard, fading to 0 at {formatMiles(proposal.capMi)}.
       </Rule>
       <Rule icon={EyeOff} tone="red" title={`AI matches beyond ${formatMiles(proposal.capMi)} are not shown`}>
         Too far to be a real option, so AI does not suggest them. People who applied are
